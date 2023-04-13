@@ -1,0 +1,34 @@
+body  {
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 60px;
+}
+
+button {
+    margin: auto;
+    cursor: pointer;
+    width: 200px;
+    height: 50px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.root {
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    gap: 10px;
+}
+
+.hangman {grid-column: 1;}
+.main {grid-column: 2;}
+.letters {grid-column: 3;}
+
+#display {
+    letter-spacing: 10px;
+    margin-bottom: 20px;
+}
