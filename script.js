@@ -1,8 +1,10 @@
 const word = "bonsoir"
 const arr = word.split("") // or use Array.from() ?
 let screen = Array(word.length).fill("_")
+let wrongLetters = []
 
 const letterContainer = document.getElementById("letter")
+const wrongLettersContainer = document.querySelector(".letters")
 
 function show() {
     Array.from(document.querySelectorAll('.hidden')).forEach((elem) => elem.classList.remove('hidden'))
@@ -19,10 +21,17 @@ function tryLetter() {
     for (let i = 0; i < screen.length; i++) {
         if (arr[i] === letter) {
             screen[i] = letter
+        } else if (!wrongLetters.includes(letter)) {
+            addWrongLetter(letter)
         }
     }
     update()
     console.log(checkWin())
+}
+
+function addWrongLetter(ltr) {
+    wrongLetters.push(ltr)
+    wrongLettersContainer.innerHTML += `<div>${ltr}</div>`
 }
 
 function play() {

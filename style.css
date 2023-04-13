@@ -32,3 +32,8 @@ button {
     letter-spacing: 10px;
     margin-bottom: 20px;
 }
+
+.letters div {
+    border: 1px black solid;
+    width: fit-content;
+}
