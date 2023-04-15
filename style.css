@@ -26,7 +26,12 @@ button {
 
 .hangman {grid-column: 1;}
 .main {grid-column: 2;}
-.letters {grid-column: 3;}
+.letters {
+    grid-column: 3;
+    display: grid;
+    grid-template-columns: repeat(8, 5%);
+    justify-content: center;
+}
 
 #display {
     letter-spacing: 10px;
@@ -35,5 +40,8 @@ button {
 
 .letters div {
     border: 1px black solid;
-    width: fit-content;
+    border-radius: 10%;
+    height: 20px;
+    width: 20px;
+    margin: 3px;
 }
