@@ -15,9 +15,12 @@ function update() {
     document.getElementById("letter").value = ""
 }
 
-function tryLetter() {
-    const letter = letterContainer.value
-    
+function tryInput() {
+    const ltr = letterContainer.value
+    tryLetter(ltr)
+}
+
+function tryLetter(letter) {
     if (!arr.includes(letter)) {
         if (!wrongLetters.includes(letter)) {
             addWrongLetter(letter)
@@ -55,4 +58,10 @@ function checkWin() {
 }
 
 document.getElementById("playButton").addEventListener("click", play)
-document.getElementById("sender").addEventListener("click", tryLetter)
+document.getElementById("sender").addEventListener("click", tryInput)
+letterContainer.addEventListener("keydown", 
+(e) => {
+    if (e.key == "Enter") {
+        tryInput();
+    }
+})
