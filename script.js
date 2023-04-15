@@ -18,15 +18,19 @@ function update() {
 function tryLetter() {
     const letter = letterContainer.value
     
-    for (let i = 0; i < screen.length; i++) {
-        if (arr[i] === letter) {
-            screen[i] = letter
-        } else if (!wrongLetters.includes(letter)) {
+    if (!arr.includes(letter)) {
+        if (!wrongLetters.includes(letter)) {
             addWrongLetter(letter)
+        }
+    } else {
+        for (let i = 0; i < screen.length; i++) {
+            if (arr[i] === letter) {
+                screen[i] = letter
+            }
         }
     }
     update()
-    console.log(checkWin())
+    checkWin()
 }
 
 function addWrongLetter(ltr) {
@@ -45,7 +49,9 @@ function equalArrays(a, b) {
 }
 
 function checkWin() {
-    return equalArrays(arr, screen)
+    if (equalArrays(arr, screen)) {
+        alert("You won!")
+    }
 }
 
 document.getElementById("playButton").addEventListener("click", play)
