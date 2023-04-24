@@ -6,6 +6,8 @@ let screen
 let wrongLetters
 let isSonWinning = false
 
+const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçù")
+
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
 const confirmButton = document.getElementById("sender")
@@ -42,12 +44,18 @@ function update() {
     document.getElementById("letter").value = ""
 }
 
+function isLetter(letter) {
+    return allowedChars.includes(letter)
+}
+
 function tryInput() {
     if (isSonWinning) {
         newWord()
     } else {
-        const ltr = letterContainer.value
-        tryLetter(ltr)
+        const ltr = letterContainer.value.toLowerCase()
+        if (isLetter(ltr)) {
+            tryLetter(ltr)
+        }
     }
 }
 
