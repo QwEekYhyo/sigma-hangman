@@ -1,10 +1,37 @@
-const word = "bonsoir"
-const arr = word.split("") // or use Array.from() ?
-let screen = Array(word.length).fill("_")
-let wrongLetters = []
+let word
+let word_arr
+let words
+wordsRequest().then((data) => {words = data})
+let screen
+let wrongLetters
+let isSonWinning = false
 
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
+const confirmButton = document.getElementById("sender")
+
+async function wordsRequest() {
+    return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
+}
+
+function newWord() {
+    word = randomInArray(words)
+    word_arr = word.split("")
+    screen = Array(word.length).fill("_")
+    wrongLetters = []
+    isSonWinning = false
+    confirmButton.innerHTML = "Confirm"
+    wrongLettersContainer.innerHTML = ""
+    update()
+}
+
+function randomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function randomInArray(array) {
+    return array[randomInt(array.length)]
+}
 
 function show() {
     Array.from(document.querySelectorAll('.hidden')).forEach((elem) => elem.classList.remove('hidden'))
@@ -16,18 +43,22 @@ function update() {
 }
 
 function tryInput() {
-    const ltr = letterContainer.value
-    tryLetter(ltr)
+    if (isSonWinning) {
+        newWord()
+    } else {
+        const ltr = letterContainer.value
+        tryLetter(ltr)
+    }
 }
 
 function tryLetter(letter) {
-    if (!arr.includes(letter)) {
+    if (!word_arr.includes(letter)) {
         if (!wrongLetters.includes(letter)) {
             addWrongLetter(letter)
         }
     } else {
         for (let i = 0; i < screen.length; i++) {
-            if (arr[i] === letter) {
+            if (word_arr[i] === letter) {
                 screen[i] = letter
             }
         }
@@ -42,6 +73,7 @@ function addWrongLetter(ltr) {
 }
 
 function play() {
+    newWord()
     show()
     document.getElementById("playButton").classList.add("hidden")
     update()
@@ -52,13 +84,15 @@ function equalArrays(a, b) {
 }
 
 function checkWin() {
-    if (equalArrays(arr, screen)) {
+    if (equalArrays(word_arr, screen)) {
+        isSonWinning = true
+        confirmButton.innerHTML = "Play again"
         alert("You won!")
     }
 }
 
 document.getElementById("playButton").addEventListener("click", play)
-document.getElementById("sender").addEventListener("click", tryInput)
+confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
 (e) => {
     if (e.key == "Enter") {
