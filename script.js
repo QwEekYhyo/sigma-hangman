@@ -7,10 +7,13 @@ let wrongLetters
 let isSonWinning = false
 
 const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçù")
+const images = ["head", "chest", "1_arm", "no_legs", "full"]
+let index = -1
 
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
 const confirmButton = document.getElementById("sender")
+const imageHTML = document.getElementById("hangman")
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
@@ -78,6 +81,8 @@ function tryLetter(letter) {
 function addWrongLetter(ltr) {
     wrongLetters.push(ltr)
     wrongLettersContainer.innerHTML += `<div>${ltr}</div>`
+    index++
+    imageHTML.setAttribute("src", `assets/steve_${images[index]}.png`)
 }
 
 function play() {
