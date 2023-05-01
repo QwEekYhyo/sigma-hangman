@@ -82,8 +82,10 @@ function addWrongLetter(ltr) {
     const elem = document.createElement("div")
     elem.innerText = ltr
     wrongLettersContainer.appendChild(elem)
-    index++
-    imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
+    if (index < 9) {
+        index++
+        imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
+    }
 }
 
 function play() {
