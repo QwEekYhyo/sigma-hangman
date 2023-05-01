@@ -61,7 +61,17 @@ button {
     margin: auto;
 }
 #display {
-    letter-spacing: 10px;
+    letter-spacing: 0.5vw;
+    font-size: min(4vh, 2vw);
+    color: #2f2f2f;
+}
+#letter {
+    height: 3vh;
+    width: 14vw;
+}
+#sender {
+    height: 6vh;
+    width: 12vw;
 }
 /*----------------*/
 .letters {
