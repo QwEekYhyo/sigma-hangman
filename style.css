@@ -1,10 +1,16 @@
 body  {
-    margin-bottom: 60px;
+    margin: 0;
+    padding: 0;
     text-align: center;
 }
 
 h1 {
-    margin-bottom: 60px;
+    padding: 4vh 0 5vh 0;
+    font-size: 5vh;
+    margin: 0%;
+    color: #c9eac1; /* #aec5a8 */
+    background-color: #2f2f2f;
+    border-bottom: 1vh solid #aec5a8;
 }
 
 button {
@@ -20,12 +26,34 @@ button {
 
 .root {
     display: grid;
-    grid-template-columns: repeat(3, 33%);
-    gap: 10px;
+    grid-template-columns: repeat(3, 33.3333333vw);
+    height: 84vh ;
+    background-image: url("images/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.hangman {grid-column: 1;}
-.main {grid-column: 2;}
+.root > div {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10%;
+    margin: 16.8vh 3% 16.8vh 3%;
+}
+
+.hangman {
+    grid-column: 1;
+}
+
+#hangman {
+    height: min(50vh, 25vw);
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.main {
+    grid-column: 2;
+}
 .letters {
     grid-column: 3;
     display: grid;
@@ -35,7 +63,7 @@ button {
 
 #display {
     letter-spacing: 10px;
-    margin-bottom: 20px;
+    margin: 30px 0 20px 0;
 }
 
 .letters div {

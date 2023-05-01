@@ -7,7 +7,6 @@ let wrongLetters
 let isSonWinning = false
 
 const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçù")
-const images = ["head", "chest", "1_arm", "no_legs", "full"]
 let index = -1
 
 const letterContainer = document.getElementById("letter")
@@ -82,7 +81,7 @@ function addWrongLetter(ltr) {
     wrongLetters.push(ltr)
     wrongLettersContainer.innerHTML += `<div>${ltr}</div>`
     index++
-    imageHTML.setAttribute("src", `assets/steve_${images[index]}.png`)
+    imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
 }
 
 function play() {
