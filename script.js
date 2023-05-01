@@ -79,7 +79,9 @@ function tryLetter(letter) {
 
 function addWrongLetter(ltr) {
     wrongLetters.push(ltr)
-    wrongLettersContainer.innerHTML += `<div>${ltr}</div>`
+    const elem = document.createElement("div")
+    elem.innerText = ltr
+    wrongLettersContainer.appendChild(elem)
     index++
     imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
 }
