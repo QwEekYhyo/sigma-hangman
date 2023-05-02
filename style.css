@@ -2,13 +2,14 @@ body  {
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: #2f2f2f;
 }
 
 h1 {
     padding: 4vh 0 5vh 0;
     font-size: 5vh;
     margin: 0%;
-    color: #c9eac1; /* #aec5a8 */
+    color: #c9eac1;
     background-color: #2f2f2f;
     border-bottom: 1vh solid #aec5a8;
 }
@@ -76,15 +77,19 @@ button {
 /*----------------*/
 .letters {
     grid-column: 3;
-    display: grid;
-    grid-template-columns: repeat(8, 5%);
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    padding: 10% 2vw 10% 2vw;
 }
 
-.letters div {
+.letters > div {
     border: 1px black solid;
     border-radius: 10%;
-    height: 20px;
-    width: 20px;
-    margin: 3px;
+    font-size: min(4vh, 2vw);
+    flex: 0 0 14%;
+    height: 0;
+    padding-top: 4%; /* no questions asked */
+    padding-bottom: 10%;
+    margin: 1%;
 }

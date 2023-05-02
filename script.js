@@ -5,9 +5,9 @@ wordsRequest().then((data) => {words = data})
 let screen
 let wrongLetters
 let isSonWinning = false
+let index
 
-const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçù")
-let index = -1
+const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçùê")
 
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
@@ -23,9 +23,11 @@ function newWord() {
     word_arr = word.split("")
     screen = Array(word.length).fill("_")
     wrongLetters = []
-    isSonWinning = false
-    confirmButton.innerHTML = "Confirm"
+    index = -1
+    imageHTML.removeAttribute("src")
     wrongLettersContainer.innerHTML = ""
+    confirmButton.innerHTML = "Confirm"
+    isSonWinning = false
     update()
 }
 
