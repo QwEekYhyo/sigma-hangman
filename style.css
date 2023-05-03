@@ -58,7 +58,7 @@ button:active {
 .root {
     display: grid;
     grid-template-columns: repeat(3, 33.3333333vw);
-    height: 84vh ;
+    height: 84.8vh; /* again dont ask questions */
     background-image: url("images/background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
