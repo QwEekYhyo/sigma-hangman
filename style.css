@@ -32,7 +32,7 @@ h1 {
 
 button {
     cursor: pointer;
-    font-family: "regular";
+    font-family: inherit;
     color: var(--main-green);
     background-color: var(--main-grey);
     border: min(0.5vh, 0.25vw) outset var(--main-green);
@@ -99,11 +99,16 @@ button:active {
 #letter {
     height: 3vh;
     width: 14vw;
+    padding-left: 2%;
     font-size: min(3vh, 1.5vw);
-    font-family: "regular";
+    font-family: inherit;
     color: var(--main-green);
     background-color: var(--main-grey);
+    border-width: 0 0 min(0.4vh, 0.2vw) 0;
     border-color: var(--main-green);
+}
+#letter:focus {
+    outline: none;
 }
 #sender {
     height: 6vh;

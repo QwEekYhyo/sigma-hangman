@@ -1,5 +1,5 @@
 let word
-let word_arr
+let wordArr
 let words
 wordsRequest().then((data) => {words = data})
 let screen
@@ -13,9 +13,9 @@ const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
 const confirmButton = document.getElementById("sender")
 const imageHTML = document.getElementById("hangman")
-const play_button = document.getElementById("play_button")
+const playButton = document.getElementById("play_button")
 const display = document.getElementById("display")
-const letter_input = document.getElementById("letter")
+const letterInput = document.getElementById("letter")
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
@@ -23,7 +23,7 @@ async function wordsRequest() {
 
 function newWord() {
     word = randomInArray(words)
-    word_arr = word.split("")
+    wordArr = word.split("")
     screen = Array(word.length).fill("_")
     wrongLetters = []
     index = -1
@@ -48,7 +48,7 @@ function show() {
 
 function update() {
     display.innerText = screen.join("")
-    letter_input.value = ""
+    letterInput.value = ""
 }
 
 function isLetter(letter) {
@@ -68,13 +68,13 @@ function tryInput() {
 }
 
 function tryLetter(letter) {
-    if (!word_arr.includes(letter)) {
+    if (!wordArr.includes(letter)) {
         if (!wrongLetters.includes(letter)) {
             addWrongLetter(letter)
         }
     } else {
         for (let i = 0; i < screen.length; i++) {
-            if (word_arr[i] === letter) {
+            if (wordArr[i] === letter) {
                 screen[i] = letter
             }
         }
@@ -97,7 +97,7 @@ function addWrongLetter(ltr) {
 function play() {
     newWord()
     show()
-    play_button.classList.add("hidden")
+    playButton.classList.add("hidden")
     update()
 }
 
@@ -106,14 +106,14 @@ function equalArrays(a, b) {
 }
 
 function checkWin() {
-    if (equalArrays(word_arr, screen)) {
+    if (equalArrays(wordArr, screen)) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
         alert("You won!")
     }
 }
 
-play_button.addEventListener("click", play)
+playButton.addEventListener("click", play)
 confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
 (e) => {
