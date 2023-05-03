@@ -1,21 +1,46 @@
+@font-face {
+    font-family: "slime";
+    src: url("fonts/slime.ttf");
+}
+
+@font-face {
+    font-family: "regular";
+    src: url("fonts/regular.otf");
+}
+
+:root {
+    --main-grey: #2f2f2f;
+    --main-green: #c9eac1;
+}
+
 body  {
     margin: 0;
     padding: 0;
     text-align: center;
-    background-color: #2f2f2f;
+    background-color: var(--main-grey);
+    font-family: "regular";
 }
 
 h1 {
-    padding: 4vh 0 5vh 0;
-    font-size: 5vh;
+    padding: 3vh 0 4vh 0;
+    font-family: "slime";
+    font-size: min(6vh, 3vw);
     margin: 0%;
-    color: #c9eac1;
-    background-color: #2f2f2f;
-    border-bottom: 1vh solid #aec5a8;
+    color: var(--main-green);
+    border-bottom: 1vh solid var(--main-green);
 }
 
 button {
     cursor: pointer;
+    font-family: "regular";
+    color: var(--main-green);
+    background-color: var(--main-grey);
+    border: min(0.5vh, 0.25vw) outset var(--main-green);
+    border-radius: 30%;
+}
+
+button:active {
+    background-color: #464646;
 }
 
 .hidden {
@@ -24,6 +49,7 @@ button {
 
 #play_button {
     grid-column: 2;
+    font-size: min(6vh, 3vw);
     height: 10%;
     width: 50%;
     margin: auto;
@@ -40,7 +66,7 @@ button {
 }
 
 .root > div {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.4);
     border-radius: 10%;
     margin: 16.8vh 3% 16.8vh 3%;
 }
@@ -68,15 +94,21 @@ button {
 #display {
     letter-spacing: 0.5vw;
     font-size: min(4vh, 2vw);
-    color: #2f2f2f;
+    color: var(--main-green);
 }
 #letter {
     height: 3vh;
     width: 14vw;
+    font-size: min(3vh, 1.5vw);
+    font-family: "regular";
+    color: var(--main-green);
+    background-color: var(--main-grey);
+    border-color: var(--main-green);
 }
 #sender {
     height: 6vh;
     width: 12vw;
+    font-size: min(4vh, 2vw);
 }
 /*----------------*/
 .letters {
@@ -88,13 +120,13 @@ button {
 }
 
 .letters > div {
-    color: #2f2f2f;
-    border: 1px #2f2f2f solid;
+    color: var(--main-green);
+    border: min(0.5vh, 0.25vw) var(--main-green) solid;
     border-radius: 10%;
     font-size: min(4vh, 2vw);
     flex: 0 0 14%;
     height: 0;
-    padding-top: 4%; /* no questions asked */
-    padding-bottom: 10%;
+    padding-top: 2%; /* no questions asked */
+    padding-bottom: 12%;
     margin: 1%;
 }
