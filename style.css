@@ -15,14 +15,18 @@ h1 {
 }
 
 button {
-    margin: auto;
     cursor: pointer;
-    width: 200px;
-    height: 50px;
 }
 
 .hidden {
     display: none !important;
+}
+
+#play_button {
+    grid-column: 2;
+    height: 10%;
+    width: 50%;
+    margin: auto;
 }
 
 .root {
@@ -84,7 +88,8 @@ button {
 }
 
 .letters > div {
-    border: 1px black solid;
+    color: #2f2f2f;
+    border: 1px #2f2f2f solid;
     border-radius: 10%;
     font-size: min(4vh, 2vw);
     flex: 0 0 14%;

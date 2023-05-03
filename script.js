@@ -13,6 +13,9 @@ const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
 const confirmButton = document.getElementById("sender")
 const imageHTML = document.getElementById("hangman")
+const play_button = document.getElementById("play_button")
+const display = document.getElementById("display")
+const letter_input = document.getElementById("letter")
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
@@ -44,8 +47,8 @@ function show() {
 }
 
 function update() {
-    document.getElementById("display").innerText = screen.join("")
-    document.getElementById("letter").value = ""
+    display.innerText = screen.join("")
+    letter_input.value = ""
 }
 
 function isLetter(letter) {
@@ -61,6 +64,7 @@ function tryInput() {
             tryLetter(ltr)
         }
     }
+    letterContainer.focus()
 }
 
 function tryLetter(letter) {
@@ -93,7 +97,7 @@ function addWrongLetter(ltr) {
 function play() {
     newWord()
     show()
-    document.getElementById("playButton").classList.add("hidden")
+    play_button.classList.add("hidden")
     update()
 }
 
@@ -109,7 +113,7 @@ function checkWin() {
     }
 }
 
-document.getElementById("playButton").addEventListener("click", play)
+play_button.addEventListener("click", play)
 confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
 (e) => {
