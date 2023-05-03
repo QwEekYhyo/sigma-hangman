@@ -36,13 +36,11 @@ const removeAccents = (str) => {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-function randomInt(max) {
-  return Math.floor(Math.random() * max);
-}
+const randomInt = (max) =>
+    Math.floor(Math.random() * max)
 
-function randomInArray(array) {
-    return array[randomInt(array.length)]
-}
+const randomInArray = (array) =>
+    array[randomInt(array.length)]
 
 function show() {
     Array.from(document.querySelectorAll('.hidden')).forEach((elem) => elem.classList.remove('hidden'))
@@ -53,9 +51,8 @@ function update() {
     letterInput.value = ""
 }
 
-function isLetter(letter) {
-    return letter.match(/[a-z]/i)
-}
+const isLetter = (letter) =>
+    letter.match(/[a-z]/i)
 
 function displayMessage(str) {
         confirmButton.innerHTML = str
