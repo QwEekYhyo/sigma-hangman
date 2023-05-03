@@ -1,13 +1,11 @@
 let word
-let wordArr
+let wordUnaccented
 let words
 wordsRequest().then((data) => {words = data})
 let screen
 let wrongLetters
 let isSonWinning = false
 let index
-
-const allowedChars = Array.from("abcdefghijklmnopqrstuvwxyzéèàçùê")
 
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
@@ -23,7 +21,7 @@ async function wordsRequest() {
 
 function newWord() {
     word = randomInArray(words)
-    wordArr = word.split("")
+    wordUnaccented = removeAccents(word)
     screen = Array(word.length).fill("_")
     wrongLetters = []
     index = -1
@@ -32,6 +30,10 @@ function newWord() {
     confirmButton.innerHTML = "Confirm"
     isSonWinning = false
     update()
+}
+
+const removeAccents = (str) => {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 function randomInt(max) {
@@ -52,7 +54,12 @@ function update() {
 }
 
 function isLetter(letter) {
-    return allowedChars.includes(letter)
+    return letter.match(/[a-z]/i)
+}
+
+function displayMessage(str) {
+        confirmButton.innerHTML = str
+        setTimeout(() => confirmButton.innerHTML = "Confirm", 600)
 }
 
 function tryInput() {
@@ -62,20 +69,25 @@ function tryInput() {
         const ltr = letterContainer.value.toLowerCase()
         if (isLetter(ltr)) {
             tryLetter(ltr)
+        } else {
+            letterInput.value = ""
+            displayMessage("Unauthorized >:(")
         }
     }
     letterContainer.focus()
 }
 
 function tryLetter(letter) {
-    if (!wordArr.includes(letter)) {
+    if (!wordUnaccented.includes(letter)) {
         if (!wrongLetters.includes(letter)) {
             addWrongLetter(letter)
+        } else {
+            displayMessage("Already tried :(")
         }
     } else {
         for (let i = 0; i < screen.length; i++) {
-            if (wordArr[i] === letter) {
-                screen[i] = letter
+            if (wordUnaccented[i] === letter) {
+                screen[i] = word[i]
             }
         }
     }
@@ -102,12 +114,8 @@ function play() {
     update()
 }
 
-function equalArrays(a, b) {
-    return a.length == b.length && a.every((val, index) => val === b[index])
-}
-
 function checkWin() {
-    if (equalArrays(wordArr, screen)) {
+    if (word === screen.join("")) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
         setTimeout(() => {alert("You have won!")}, 500)
