@@ -105,10 +105,11 @@ button:active {
     color: var(--main-green);
     background-color: var(--main-grey);
     border-width: 0 0 min(0.4vh, 0.2vw) 0;
-    border-color: var(--main-green);
+    border-color: var(--main-grey);
 }
 #letter:focus {
     outline: none;
+    border-color: var(--main-green);
 }
 #sender {
     height: 6vh;
