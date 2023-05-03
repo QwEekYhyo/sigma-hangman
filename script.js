@@ -84,6 +84,8 @@ function tryLetter(letter) {
         } else {
             displayMessage("Already tried :(")
         }
+    } else if (screen.includes(letter)) {
+            displayMessage("Already guessed :(")
     } else {
         for (let i = 0; i < screen.length; i++) {
             if (wordUnaccented[i] === letter) {

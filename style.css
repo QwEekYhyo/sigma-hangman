@@ -113,7 +113,7 @@ button:active {
 #sender {
     height: 6vh;
     width: 12vw;
-    font-size: min(4vh, 2vw);
+    font-size: min(3vh, 2vw);
 }
 /*----------------*/
 .letters {
