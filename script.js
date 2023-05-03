@@ -81,6 +81,7 @@ function tryLetter(letter) {
     }
     update()
     checkWin()
+    checkLoss()
 }
 
 function addWrongLetter(ltr) {
@@ -109,7 +110,15 @@ function checkWin() {
     if (equalArrays(wordArr, screen)) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
-        alert("You won!")
+        setTimeout(() => {alert("You have won!")}, 500)
+    }
+}
+
+function checkLoss() {
+    if (index >= 9) {
+        isSonWinning = true
+        confirmButton.innerHTML = "Play again"
+        setTimeout(() => {alert("You have lost :(")}, 500)
     }
 }
 
