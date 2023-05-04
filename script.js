@@ -15,6 +15,9 @@ const playButton = document.getElementById("play_button")
 const display = document.getElementById("display")
 const letterInput = document.getElementById("letter")
 
+const audioCtx = new AudioContext();
+const sounds = await multipleBuffers(["turn on.mp3", "continuous.mp3", "reversed.mp3", "caca.mp3"].map((file) => "sounds/" + file))
+
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
 }
@@ -111,13 +114,14 @@ function play() {
     show()
     playButton.classList.add("hidden")
     update()
+    soundsChain(sounds.slice(0, 2))
 }
 
 function checkWin() {
     if (word === screen.join("")) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
-        setTimeout(() => {alert("You have won!")}, 500)
+        setTimeout(() => alert("You have won!"), 500)
     }
 }
 
@@ -125,7 +129,49 @@ function checkLoss() {
     if (index >= 9) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
-        setTimeout(() => {alert("You have lost :(")}, 500)
+        setTimeout(() => alert("You have lost :("), 500)
+    }
+}
+
+async function getBuffer(url) {
+    console.log("Decoding " + url)
+    const request = await fetch(url)
+    const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer())
+    console.log(`Successfully decoded ${url}!`)
+    return buffer
+}
+
+async function multipleBuffers(urls) {
+    return await Promise.all(urls.map(async (url) => await getBuffer(url)))
+}
+
+// non one liner version of the method above (might need it later)
+async function ezmultipleBuffers(urls) {
+    let buffers = []
+
+    for (const url of urls) {
+        const buffer = await getBuffer(url)
+        buffers.push(buffer)
+    }
+    return buffers
+}
+
+function playSound(buffer, time = 0, volume = 0.1) {
+    const source = audioCtx.createBufferSource()
+    const gain = audioCtx.createGain()
+
+    source.buffer = buffer
+    source.connect(gain)
+    gain.connect(audioCtx.destination)
+    gain.gain.setValueAtTime(volume, time)
+    source.start(time)
+}
+
+function soundsChain(buffers, startingTime = 0) {
+    let now = startingTime
+    for (const buffer of buffers) {
+        playSound(buffer, now)
+        now += buffer.duration
     }
 }
 
