@@ -6,12 +6,14 @@ let screen
 let wrongLetters
 let isSonWinning = false
 let index
+let difficulty = 1
 
 const letterContainer = document.getElementById("letter")
 const wrongLettersContainer = document.querySelector(".letters")
 const confirmButton = document.getElementById("sender")
 const imageHTML = document.getElementById("hangman")
 const playButton = document.getElementById("play_button")
+const difficultyButton = document.getElementById("difficulty_button")
 const display = document.getElementById("display")
 const letterInput = document.getElementById("letter")
 
@@ -22,8 +24,19 @@ async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
 }
 
+// difficulty => 1, 2 or 3
+function getWord(arr, difficulty = 1) {
+    console.log("Generating a word...")
+    let word = ""
+    while (word.length < difficulty * 3 || word.length > difficulty * 5) {
+        word = randomInArray(arr)
+    }
+    console.log("Word successfully generated")
+    return word
+}
+
 function newWord() {
-    word = randomInArray(words)
+    word = getWord(words, difficulty)
     wordUnaccented = removeAccents(word)
     screen = Array(word.length).fill("_")
     wrongLetters = []
@@ -31,6 +44,7 @@ function newWord() {
     imageHTML.removeAttribute("src")
     wrongLettersContainer.innerHTML = ""
     confirmButton.innerHTML = "Confirm"
+    letterContainer.classList.remove("hidden")
     isSonWinning = false
     update()
 }
@@ -109,10 +123,18 @@ function addWrongLetter(ltr) {
     }
 }
 
+function changeDifficulty() {
+    const difficultiesText = ["Easy", "Normal", "Hard"]
+    difficulty = (difficulty++ % 3) + 1
+    console.log(difficulty)
+    difficultyButton.innerText = difficultiesText[difficulty - 1]
+}
+
 function play() {
     newWord()
     show()
     playButton.classList.add("hidden")
+    difficultyButton.classList.add("hidden")
     update()
     soundsChain(sounds.slice(0, 2))
 }
@@ -121,6 +143,7 @@ function checkWin() {
     if (word === screen.join("")) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
+        letterContainer.classList.add("hidden")
         setTimeout(() => alert("You have won!"), 500)
     }
 }
@@ -129,6 +152,7 @@ function checkLoss() {
     if (index >= 9) {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
+        letterContainer.classList.add("hidden")
         setTimeout(() => alert("You have lost :("), 500)
     }
 }
@@ -176,6 +200,7 @@ function soundsChain(buffers, startingTime = 0) {
 }
 
 playButton.addEventListener("click", play)
+difficultyButton.addEventListener("click", changeDifficulty)
 confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
 (e) => {

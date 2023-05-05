@@ -55,6 +55,15 @@ button:active {
     margin: auto;
 }
 
+#difficulty_button {
+    height: 10%;
+    width: 10%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: min(3vh, 2vw);
+}
+
 .root {
     display: grid;
     grid-template-columns: repeat(3, 33.3333333vw);
