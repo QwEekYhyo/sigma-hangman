@@ -18,7 +18,8 @@ const display = document.getElementById("display")
 const letterInput = document.getElementById("letter")
 
 const audioCtx = new AudioContext();
-const sounds = await multipleBuffers(["turn on.mp3", "continuous.mp3", "reversed.mp3", "caca.mp3"].map((file) => "sounds/" + file))
+let globalSource
+const sounds = await multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file))
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
@@ -46,6 +47,8 @@ function newWord() {
     confirmButton.innerHTML = "Confirm"
     letterContainer.classList.remove("hidden")
     isSonWinning = false
+    playSound(sounds[0])
+    loopSoundButSourceIsGlobal(sounds[1], sounds[0].duration)
     update()
 }
 
@@ -136,7 +139,6 @@ function play() {
     playButton.classList.add("hidden")
     difficultyButton.classList.add("hidden")
     update()
-    soundsChain(sounds.slice(0, 2))
 }
 
 function checkWin() {
@@ -144,6 +146,7 @@ function checkWin() {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
         letterContainer.classList.add("hidden")
+        globalSource.stop()
         setTimeout(() => alert("You have won!"), 500)
     }
 }
@@ -153,6 +156,7 @@ function checkLoss() {
         isSonWinning = true
         confirmButton.innerHTML = "Play again"
         letterContainer.classList.add("hidden")
+        globalSource.stop()
         setTimeout(() => alert("You have lost :("), 500)
     }
 }
@@ -191,12 +195,16 @@ function playSound(buffer, time = 0, volume = 0.1) {
     source.start(time)
 }
 
-function soundsChain(buffers, startingTime = 0) {
-    let now = startingTime
-    for (const buffer of buffers) {
-        playSound(buffer, now)
-        now += buffer.duration
-    }
+function loopSoundButSourceIsGlobal(buffer, time = 0, volume = 0.1) {
+    globalSource = audioCtx.createBufferSource()
+    const gain = audioCtx.createGain()
+
+    globalSource.buffer = buffer
+    globalSource.connect(gain)
+    gain.connect(audioCtx.destination)
+    gain.gain.setValueAtTime(volume, time)
+    setTimeout(() => globalSource.start(), time * 1000) // je m'en bas les couilles
+    globalSource.loop = true
 }
 
 playButton.addEventListener("click", play)
