@@ -52,7 +52,7 @@ function newWord() {
     index = -1
     imageHTML.removeAttribute("src")
     wrongLettersContainer.innerHTML = ""
-    confirmButton.innerHTML = "Confirm"
+    confirmButton.innerText = "Confirm"
     letterContainer.classList.remove("hidden")
     isSonWinning = false
     playSound(sounds[0])
@@ -70,8 +70,8 @@ function update() {
 }
 
 function displayMessage(str) {
-        confirmButton.innerHTML = str
-        setTimeout(() => confirmButton.innerHTML = "Confirm", 600)
+        confirmButton.innerText = str
+        setTimeout(() => confirmButton.innerText = "Confirm", 600)
 }
 
 function tryInput() {
@@ -122,7 +122,7 @@ function addWrongLetter(ltr) {
 }
 
 function changeDifficulty() {
-    const difficultiesText = ["Easy", "Normal", "Hard"]
+    const difficultiesText = ["Short", "Medium", "Long"]
     difficulty = (difficulty++ % 3) + 1
     difficultyButton.innerText = difficultiesText[difficulty - 1]
 }
@@ -138,7 +138,7 @@ function play() {
 function checkWin() {
     if (word === screen.join("")) {
         isSonWinning = true
-        confirmButton.innerHTML = "Play again"
+        confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
         globalSource.stop()
         setTimeout(() => alert("You have won!"), 500)
@@ -148,11 +148,23 @@ function checkWin() {
 function checkLoss() {
     if (index >= 9) {
         isSonWinning = true
-        confirmButton.innerHTML = "Play again"
+        confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
         globalSource.stop()
-        setTimeout(() => alert("You have lost :("), 500)
+        setTimeout(() => playCoolAnimation(), 600)
     }
+}
+
+function playCoolAnimation() {
+    const image = document.createElement("img")
+    const sound = sounds[2]
+
+    image.classList.add("friendly_image")
+    image.setAttribute("src", "images/nightmare/friendly.png")
+    document.body.appendChild(image)
+    playSound(sound)
+    setTimeout(() => image.remove(), sound.duration * 1000)
+
 }
 
 async function getBuffer(url) {
@@ -167,7 +179,7 @@ async function multipleBuffers(urls) {
     return await Promise.all(urls.map((url) => getBuffer(url)))
 }
 
-// non one liner version of the method above (might need it later)
+// non one liner version of the function above (might need it later)
 async function ezmultipleBuffers(urls) {
     let buffers = []
 
