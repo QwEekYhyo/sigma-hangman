@@ -17,13 +17,21 @@ const difficultyButton = document.getElementById("difficulty_button")
 const display = document.getElementById("display")
 const letterInput = document.getElementById("letter")
 
-const audioCtx = new AudioContext();
+const audioCtx = new AudioContext()
 let globalSource
 const sounds = await multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file))
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
 }
+
+const removeAccents = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+const randomInt = (max) => Math.floor(Math.random() * max)
+
+const randomInArray = (array) => array[randomInt(array.length)]
+
+const isLetter = (letter) => letter.match(/[a-z]/i)
 
 // difficulty => 1, 2 or 3
 function getWord(arr, difficulty = 1) {
@@ -52,16 +60,6 @@ function newWord() {
     update()
 }
 
-const removeAccents = (str) => {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-const randomInt = (max) =>
-    Math.floor(Math.random() * max)
-
-const randomInArray = (array) =>
-    array[randomInt(array.length)]
-
 function show() {
     Array.from(document.querySelectorAll('.hidden')).forEach((elem) => elem.classList.remove('hidden'))
 }
@@ -70,9 +68,6 @@ function update() {
     display.innerText = screen.join("")
     letterInput.value = ""
 }
-
-const isLetter = (letter) =>
-    letter.match(/[a-z]/i)
 
 function displayMessage(str) {
         confirmButton.innerHTML = str
@@ -129,7 +124,6 @@ function addWrongLetter(ltr) {
 function changeDifficulty() {
     const difficultiesText = ["Easy", "Normal", "Hard"]
     difficulty = (difficulty++ % 3) + 1
-    console.log(difficulty)
     difficultyButton.innerText = difficultiesText[difficulty - 1]
 }
 
@@ -170,7 +164,7 @@ async function getBuffer(url) {
 }
 
 async function multipleBuffers(urls) {
-    return await Promise.all(urls.map(async (url) => await getBuffer(url)))
+    return await Promise.all(urls.map((url) => getBuffer(url)))
 }
 
 // non one liner version of the method above (might need it later)
@@ -213,6 +207,6 @@ confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
 (e) => {
     if (e.key == "Enter") {
-        tryInput();
+        tryInput()
     }
 })
