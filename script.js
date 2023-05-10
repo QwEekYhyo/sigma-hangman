@@ -1,3 +1,5 @@
+import { consola } from "consola"
+
 let word
 let wordUnaccented
 let words
@@ -22,6 +24,8 @@ let globalSource
 let sounds
 multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file)).then((data) => sounds = data)
 
+consola.wrapConsole()
+
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
 }
@@ -36,12 +40,12 @@ const isLetter = (letter) => letter.match(/[a-z]/i)
 
 // difficulty => 1, 2 or 3
 function getWord(arr, difficulty = 1) {
-    console.log("Generating a word...")
+    consola.start("Generating a word...")
     let word = ""
     while (word.length < difficulty * 3 || word.length > difficulty * 5) {
         word = randomInArray(arr)
     }
-    console.log("Word successfully generated")
+    consola.success("Word successfully generated")
     return word
 }
 
@@ -169,10 +173,10 @@ function playCoolAnimation() {
 }
 
 async function getBuffer(url) {
-    console.log("Decoding " + url)
+    consola.start("Decoding " + url)
     const request = await fetch(url)
     const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer())
-    console.log(`Successfully decoded ${url}!`)
+    consola.success(`Decoded ${url}!`)
     return buffer
 }
 
