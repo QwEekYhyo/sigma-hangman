@@ -1,0 +1,17 @@
+{
+  "name": "sigma-hangman",
+  "version": "1.0.0",
+  "description": "mange tes morts",
+  "main": "index.js",
+  "repository": "git@github.com:QwEekYhyo/sigma_hangman.git",
+  "author": "QwEekYhyo <qweekyhyo.yt83@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.8.3",
+    "process": "^0.11.10",
+    "tty-browserify": "^0.0.1"
+  },
+  "dependencies": {
+    "colorette": "^2.0.20"
+  }
+}

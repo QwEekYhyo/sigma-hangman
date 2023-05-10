@@ -1,3 +1,5 @@
+import { blue } from "colorette"
+
 let word
 let wordUnaccented
 let words
@@ -19,7 +21,8 @@ const letterInput = document.getElementById("letter")
 
 const audioCtx = new AudioContext()
 let globalSource
-const sounds = await multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file))
+let sounds
+multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file)).then((data) => sounds = data)
 
 async function wordsRequest() {
     return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
@@ -170,6 +173,7 @@ function playCoolAnimation() {
 async function getBuffer(url) {
     console.log("Decoding " + url)
     const request = await fetch(url)
+    console.log(await request.arrayBuffer())
     const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer())
     console.log(`Successfully decoded ${url}!`)
     return buffer
