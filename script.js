@@ -1,5 +1,3 @@
-import { blue } from "colorette"
-
 let word
 let wordUnaccented
 let words
@@ -173,7 +171,6 @@ function playCoolAnimation() {
 async function getBuffer(url) {
     console.log("Decoding " + url)
     const request = await fetch(url)
-    console.log(await request.arrayBuffer())
     const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer())
     console.log(`Successfully decoded ${url}!`)
     return buffer
