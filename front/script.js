@@ -1,7 +1,5 @@
 let word
 let wordUnaccented
-let words
-wordsRequest().then((data) => {words = data})
 let screen
 let wrongLetters
 let isSonWinning = false
@@ -21,10 +19,6 @@ const audioCtx = new AudioContext()
 let globalSource
 const sounds = await multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file))
 
-async function wordsRequest() {
-    return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
-}
-
 const removeAccents = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
 const randomInt = (max) => Math.floor(Math.random() * max)
@@ -34,18 +28,15 @@ const randomInArray = (array) => array[randomInt(array.length)]
 const isLetter = (letter) => letter.match(/[a-z]/i)
 
 // difficulty => 1, 2 or 3
-function getWord(arr, difficulty = 1) {
+async function getWord(difficulty = 1) {
     console.log("Generating a word...")
-    let word = ""
-    while (word.length < difficulty * 3 || word.length > difficulty * 5) {
-        word = randomInArray(arr)
-    }
+    const word = await fetch('/api/getWord');
     console.log("Word successfully generated")
-    return word
+    return await word.text();
 }
 
-function newWord() {
-    word = getWord(words, difficulty)
+async function newWord() {
+    word = await getWord(difficulty)
     wordUnaccented = removeAccents(word)
     screen = Array(word.length).fill("_")
     wrongLetters = []
@@ -74,9 +65,9 @@ function displayMessage(str) {
         setTimeout(() => confirmButton.innerText = "Confirm", 600)
 }
 
-function tryInput() {
+async function tryInput() {
     if (isSonWinning) {
-        newWord()
+        await newWord()
     } else {
         const ltr = letterContainer.value.toLowerCase()
         if (isLetter(ltr)) {
@@ -127,8 +118,8 @@ function changeDifficulty() {
     difficultyButton.innerText = difficultiesText[difficulty - 1]
 }
 
-function play() {
-    newWord()
+async function play() {
+    await newWord()
     show()
     playButton.classList.add("hidden")
     difficultyButton.classList.add("hidden")
@@ -217,8 +208,8 @@ playButton.addEventListener("click", play)
 difficultyButton.addEventListener("click", changeDifficulty)
 confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
-(e) => {
+async (e) => {
     if (e.key == "Enter") {
-        tryInput()
+        await tryInput()
     }
 })
