@@ -1,9 +1,8 @@
-let word
-let wordUnaccented
 let screen
-let wrongLetters
 let isSonWinning = false
-let index
+let won = false
+let lost = false
+let index = 0
 let difficulty = 1
 
 const letterContainer = document.getElementById("letter")
@@ -27,27 +26,15 @@ const randomInArray = (array) => array[randomInt(array.length)]
 
 const isLetter = (letter) => letter.match(/[a-z]/i)
 
-// difficulty => 1, 2 or 3
-async function getWord(difficulty = 1) {
-    console.log("Generating a word...")
-    const word = await fetch('/api/getWord');
-    console.log("Word successfully generated")
-    return await word.text();
-}
-
 async function newWord() {
-    word = await getWord(difficulty)
-    wordUnaccented = removeAccents(word)
-    screen = Array(word.length).fill("_")
-    wrongLetters = []
-    index = -1
+    const length = parseInt(await (await fetch(`/api/newGame?difficulty=${difficulty}`)).text(), 10);
     imageHTML.removeAttribute("src")
     wrongLettersContainer.innerHTML = ""
     confirmButton.innerText = "Confirm"
     letterContainer.classList.remove("hidden")
-    isSonWinning = false
     playSound(sounds[0])
     loopSoundButSourceIsGlobal(sounds[1], sounds[0].duration)
+    screen = Array(length).fill("_")
     update()
 }
 
@@ -70,31 +57,20 @@ async function tryInput() {
         await newWord()
     } else {
         const ltr = letterContainer.value.toLowerCase()
-        if (isLetter(ltr)) {
-            tryLetter(ltr)
-        } else {
-            letterInput.value = ""
-            displayMessage("Unauthorized >:(")
-        }
+        await tryLetter(ltr)
     }
     letterContainer.focus()
 }
 
-function tryLetter(letter) {
-    if (!wordUnaccented.includes(letter)) {
-        if (!wrongLetters.includes(letter)) {
-            addWrongLetter(letter)
-        } else {
-            displayMessage("Already tried :(")
-        }
-    } else if (screen.includes(letter)) {
-            displayMessage("Already guessed :(")
-    } else {
-        for (let i = 0; i < screen.length; i++) {
-            if (wordUnaccented[i] === letter) {
-                screen[i] = word[i]
-            }
-        }
+async function tryLetter(letter) {
+    const gameState = await (await fetch(`/api/testLetter?letter=${letter}`)).json()
+    // try catch need to be done here with message display like before
+    screen = gameState.displayedWord
+    won = gameState.isWon
+    lost = gameState.isLost
+    if (gameState.nbErrors != index) {
+        index = gameState.nbErrors
+        addWrongLetter(letter)
     }
     update()
     checkWin()
@@ -102,12 +78,10 @@ function tryLetter(letter) {
 }
 
 function addWrongLetter(ltr) {
-    wrongLetters.push(ltr)
     const elem = document.createElement("div")
     elem.innerText = ltr
     wrongLettersContainer.appendChild(elem)
-    if (index < 9) {
-        index++
+    if (index < 11) {
         imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
     }
 }
@@ -127,7 +101,7 @@ async function play() {
 }
 
 function checkWin() {
-    if (word === screen.join("")) {
+    if (won) {
         isSonWinning = true
         confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
@@ -137,7 +111,7 @@ function checkWin() {
 }
 
 function checkLoss() {
-    if (index >= 9) {
+    if (lost) {
         isSonWinning = true
         confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
@@ -168,17 +142,6 @@ async function getBuffer(url) {
 
 async function multipleBuffers(urls) {
     return await Promise.all(urls.map((url) => getBuffer(url)))
-}
-
-// non one liner version of the function above (might need it later)
-async function ezmultipleBuffers(urls) {
-    let buffers = []
-
-    for (const url of urls) {
-        const buffer = await getBuffer(url)
-        buffers.push(buffer)
-    }
-    return buffers
 }
 
 function playSound(buffer, time = 0, volume = 0.1) {

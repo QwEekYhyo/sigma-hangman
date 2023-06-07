@@ -16,13 +16,14 @@ let game;
 
 function manageRequest(request, response) {
     const path = url.parse(request.url);
+    const params = new URLSearchParams(path.search);
+
     if (path.pathname === '/api/getWord') {
         const word = randomInArray(words);
         response.statusCode = 200;
         response.end(word);
 
     } else if (path.pathname === '/api/testLetter') {
-        const params = new URLSearchParams(path.search);
         const letter = params.get("letter").toLowerCase();
         if (isLetter(letter)) {
             game.tryLetter(letter);
@@ -34,7 +35,8 @@ function manageRequest(request, response) {
         }
 
     } else if (path.pathname === '/api/newGame') {
-        game = new Game();
+        const difficulty = params.get("difficulty");
+        game = new Game(difficulty);
 
         response.statusCode = 200;
         response.end(`${game.wordToGuess.length}`);
@@ -57,16 +59,19 @@ function readDic() {
 }
 
 function isWordGood(word) {
-    return word.length >= 6 && word.length <= 8 && word === word.toLowerCase();
+    return word === word.toLowerCase();
 }
 
 class Game {
-    constructor() {
-        this.wordToGuess = randomInArray(words);
+    constructor(difficulty) {
+        this.wordToGuess = ""
+        while (this.wordToGuess.length < difficulty * 3 || this.wordToGuess.length > difficulty * 5) {
+            this.wordToGuess = randomInArray(words);
+        }
         this.wordUnaccented = removeAccents(this.wordToGuess);
         this.displayedWord = Array(this.wordToGuess.length).fill("_")
-        this.nbErrors = -1
-        this.maxErrors = 9;
+        this.nbErrors
+        this.maxErrors = 10;
         this.isSonWinning = false;
         this.wrongLetters = [];
     }
@@ -90,6 +95,7 @@ class Game {
     }
 
     send() {
+        this.nbErrors = this.wrongLetters.length;
         return JSON.stringify({
             nbErrors: this.nbErrors,
             displayedWord: this.displayedWord,
