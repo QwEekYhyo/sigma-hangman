@@ -69,26 +69,27 @@ class Game {
             this.wordToGuess = randomInArray(words);
         }
         this.wordUnaccented = removeAccents(this.wordToGuess);
-        this.displayedWord = Array(this.wordToGuess.length).fill("_")
-        this.nbErrors
+        this.displayedWord = Array(this.wordToGuess.length).fill("_");
+        this.nbErrors;
         this.maxErrors = 10;
         this.isSonWinning = false;
         this.wrongLetters = [];
+        this.message = "";
     }
 
     tryLetter(letter) {
         if (!this.wordUnaccented.includes(letter)) {
             if (!this.wrongLetters.includes(letter)) {
-                this.wrongLetters.push(letter)
+                this.wrongLetters.push(letter);
             } else {
-                console.log("Already tried :(")
+                this.message = "Already tried :(";
             }
         } else if (this.displayedWord.includes(letter)) {
-                console.log("Already guessed :(")
+                this.message = "Already guessed :(";
         } else {
             for (let i = 0; i < this.wordToGuess.length; i++) {
                 if (this.wordUnaccented[i] === letter) {
-                    this.displayedWord[i] = this.wordToGuess[i]
+                    this.displayedWord[i] = this.wordToGuess[i];
                 }
             }
         }
@@ -96,12 +97,15 @@ class Game {
 
     send() {
         this.nbErrors = this.wrongLetters.length;
-        return JSON.stringify({
+        const toSend = JSON.stringify({
             nbErrors: this.nbErrors,
             displayedWord: this.displayedWord,
             isLost: this.nbErrors >= this.maxErrors,
             isWon: this.displayedWord.join("") === this.wordToGuess,
+            message: this.message,
         });
+        this.message = "";
+        return toSend;
     }
 }
 

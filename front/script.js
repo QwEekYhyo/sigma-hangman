@@ -32,6 +32,7 @@ async function newWord() {
     wrongLettersContainer.innerHTML = ""
     confirmButton.innerText = "Confirm"
     letterContainer.classList.remove("hidden")
+    isSonWinning = false
     playSound(sounds[0])
     loopSoundButSourceIsGlobal(sounds[1], sounds[0].duration)
     screen = Array(length).fill("_")
@@ -64,10 +65,10 @@ async function tryInput() {
 
 async function tryLetter(letter) {
     const gameState = await (await fetch(`/api/testLetter?letter=${letter}`)).json()
-    // try catch need to be done here with message display like before
     screen = gameState.displayedWord
     won = gameState.isWon
     lost = gameState.isLost
+    gameState.message && displayMessage(gameState.message);
     if (gameState.nbErrors != index) {
         index = gameState.nbErrors
         addWrongLetter(letter)
