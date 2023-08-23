@@ -23,7 +23,7 @@ const mimeTypes = {
 };
 
 function manageRequest(request, response) {
-    const uRocketLeague = '../front'.concat(url.parse(request.url).pathname);
+    let uRocketLeague = '../front'.concat(url.parse(request.url).pathname);
 
     let stat;
     try {
@@ -34,6 +34,9 @@ function manageRequest(request, response) {
         return;
     }
 
+    if (stat.isDirectory()) {
+        uRocketLeague = uRocketLeague.concat('index.html')
+    }
     response.setHeader('Content-Type', mimeTypes[path.extname(uRocketLeague)]);
     response.setHeader('Content-Length', stat.size);
 
