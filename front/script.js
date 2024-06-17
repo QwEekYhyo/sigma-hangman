@@ -1,11 +1,8 @@
-let word
-let wordUnaccented
-let words
-wordsRequest().then((data) => {words = data})
 let screen
-let wrongLetters
 let isSonWinning = false
-let index
+let won = false
+let lost = false
+let index = 0
 let difficulty = 1
 
 const letterContainer = document.getElementById("letter")
@@ -21,10 +18,6 @@ const audioCtx = new AudioContext()
 let globalSource
 const sounds = await multipleBuffers(["turn_on.mp3", "continuous.mp3", "caca.mp3"].map((file) => "sounds/" + file))
 
-async function wordsRequest() {
-    return (await axios.get("https://raw.githubusercontent.com/KevayneCst/FrenchWords/master/CorrectedFrenchDictionnary.txt")).data.split("\n")
-}
-
 const removeAccents = (str) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
 const randomInt = (max) => Math.floor(Math.random() * max)
@@ -33,23 +26,8 @@ const randomInArray = (array) => array[randomInt(array.length)]
 
 const isLetter = (letter) => letter.match(/[a-z]/i)
 
-// difficulty => 1, 2 or 3
-function getWord(arr, difficulty = 1) {
-    console.log("Generating a word...")
-    let word = ""
-    while (word.length < difficulty * 3 || word.length > difficulty * 5) {
-        word = randomInArray(arr)
-    }
-    console.log("Word successfully generated")
-    return word
-}
-
-function newWord() {
-    word = getWord(words, difficulty)
-    wordUnaccented = removeAccents(word)
-    screen = Array(word.length).fill("_")
-    wrongLetters = []
-    index = -1
+async function newWord() {
+    const length = parseInt(await (await fetch(`/api/newGame?difficulty=${difficulty}`)).text(), 10);
     imageHTML.removeAttribute("src")
     wrongLettersContainer.innerHTML = ""
     confirmButton.innerText = "Confirm"
@@ -57,6 +35,7 @@ function newWord() {
     isSonWinning = false
     playSound(sounds[0])
     loopSoundButSourceIsGlobal(sounds[1], sounds[0].duration)
+    screen = Array(length).fill("_")
     update()
 }
 
@@ -74,36 +53,25 @@ function displayMessage(str) {
         setTimeout(() => confirmButton.innerText = "Confirm", 600)
 }
 
-function tryInput() {
+async function tryInput() {
     if (isSonWinning) {
-        newWord()
+        await newWord()
     } else {
         const ltr = letterContainer.value.toLowerCase()
-        if (isLetter(ltr)) {
-            tryLetter(ltr)
-        } else {
-            letterInput.value = ""
-            displayMessage("Unauthorized >:(")
-        }
+        await tryLetter(ltr)
     }
     letterContainer.focus()
 }
 
-function tryLetter(letter) {
-    if (!wordUnaccented.includes(letter)) {
-        if (!wrongLetters.includes(letter)) {
-            addWrongLetter(letter)
-        } else {
-            displayMessage("Already tried :(")
-        }
-    } else if (screen.includes(letter)) {
-            displayMessage("Already guessed :(")
-    } else {
-        for (let i = 0; i < screen.length; i++) {
-            if (wordUnaccented[i] === letter) {
-                screen[i] = word[i]
-            }
-        }
+async function tryLetter(letter) {
+    const gameState = await (await fetch(`/api/testLetter?letter=${letter}`)).json()
+    screen = gameState.displayedWord
+    won = gameState.isWon
+    lost = gameState.isLost
+    gameState.message && displayMessage(gameState.message);
+    if (gameState.nbErrors != index) {
+        index = gameState.nbErrors
+        addWrongLetter(letter)
     }
     update()
     checkWin()
@@ -111,12 +79,10 @@ function tryLetter(letter) {
 }
 
 function addWrongLetter(ltr) {
-    wrongLetters.push(ltr)
     const elem = document.createElement("div")
     elem.innerText = ltr
     wrongLettersContainer.appendChild(elem)
-    if (index < 9) {
-        index++
+    if (index < 11) {
         imageHTML.setAttribute("src", `images/nightmare/${index}.png`)
     }
 }
@@ -127,8 +93,8 @@ function changeDifficulty() {
     difficultyButton.innerText = difficultiesText[difficulty - 1]
 }
 
-function play() {
-    newWord()
+async function play() {
+    await newWord()
     show()
     playButton.classList.add("hidden")
     difficultyButton.classList.add("hidden")
@@ -136,7 +102,7 @@ function play() {
 }
 
 function checkWin() {
-    if (word === screen.join("")) {
+    if (won) {
         isSonWinning = true
         confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
@@ -146,7 +112,7 @@ function checkWin() {
 }
 
 function checkLoss() {
-    if (index >= 9) {
+    if (lost) {
         isSonWinning = true
         confirmButton.innerText = "Play again"
         letterContainer.classList.add("hidden")
@@ -179,17 +145,6 @@ async function multipleBuffers(urls) {
     return await Promise.all(urls.map((url) => getBuffer(url)))
 }
 
-// non one liner version of the function above (might need it later)
-async function ezmultipleBuffers(urls) {
-    let buffers = []
-
-    for (const url of urls) {
-        const buffer = await getBuffer(url)
-        buffers.push(buffer)
-    }
-    return buffers
-}
-
 function playSound(buffer, time = 0, volume = 0.1) {
     const source = audioCtx.createBufferSource()
     const gain = audioCtx.createGain()
@@ -217,8 +172,8 @@ playButton.addEventListener("click", play)
 difficultyButton.addEventListener("click", changeDifficulty)
 confirmButton.addEventListener("click", tryInput)
 letterContainer.addEventListener("keydown", 
-(e) => {
+async (e) => {
     if (e.key == "Enter") {
-        tryInput()
+        await tryInput()
     }
 })
